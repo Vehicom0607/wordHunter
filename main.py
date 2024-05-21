@@ -2,14 +2,14 @@ BOARD_SIZE = 4
 alphabet = "abcdefghijklmnopqrstuvwxyz"
 
 
-board_raw = []
-for i in range(4):
-    row = []
-    for j in range(4):
-        row.append(input("Enter letter " + str(i*4 + j + 1) + ":"))
-    board_raw.append(row)
-
-print(board_raw)
+# board_raw = []
+# for i in range(4):
+#     row = []
+#     for j in range(4):
+#         row.append(input("Enter letter " + str(i*4 + j + 1) + ":"))
+#     board_raw.append(row)
+#
+# print(board_raw)
 
 
 class Letter:
@@ -30,6 +30,8 @@ class Letter:
 #     ['d', 't', 'x', 'c'],
 #     ['r', 'm', 'g', 'h'],
 #     ['u', 'e', 't', 'n']]
+board_raw = [['l', 'd', 's', 'u'], ['c', 'g', 't', 'e'], ['n', 'a', 'e', 'a'], ['o', 't', 'd', 'b']]
+
 
 board = []
 for i in range(BOARD_SIZE):  # Create 26x26 array
@@ -37,6 +39,7 @@ for i in range(BOARD_SIZE):  # Create 26x26 array
     for j in range(BOARD_SIZE):
         temp.append(Letter(i, j, board_raw[i][j]))
     board.append(temp)
+
 
 # Get all words from sowpods
 f = open("sowpods.txt", 'r')
