@@ -1,17 +1,6 @@
 BOARD_SIZE = 4
 alphabet = "abcdefghijklmnopqrstuvwxyz"
 
-
-# board_raw = []
-# for i in range(4):
-#     row = []
-#     for j in range(4):
-#         row.append(input("Enter letter " + str(i*4 + j + 1) + ":"))
-#     board_raw.append(row)
-#
-# print(board_raw)
-
-
 class Letter:
     def __init__(self, x, y, letter):
         self.x = x
@@ -22,74 +11,6 @@ class Letter:
         elif type(letter) == str:
             self.letter = letter
             self.letter_number = alphabet.find(letter)
-
-
-# for testing
-#board_raw = \
-#    [['a', 'i', 'e', 'y'],
-#     ['d', 't', 'x', 'c'],
-#     ['r', 'm', 'g', 'h'],
-#     ['u', 'e', 't', 'n']]
-board_raw = [['l', 'd', 's', 'u'], ['c', 'g', 't', 'e'], ['n', 'a', 'e', 'a'], ['o', 't', 'd', 'b']]
-
-
-board = []
-for i in range(BOARD_SIZE):  # Create 26x26 array
-    temp = []
-    for j in range(BOARD_SIZE):
-        temp.append(Letter(i, j, board_raw[i][j]))
-    board.append(temp)
-
-
-# Get all words from sowpods
-f = open("sowpods.txt", 'r')
-words = []
-for line in f:
-    if len(line[:-1]) > 2:
-        words.append(line[:-1])
-words[-1] = "zzzs"
-
-# Sort into lists by first two letters
-alphabet = "abcdefghijklmnopqrstuvwxyz"
-sorted_words = []
-for i in range(26):  # Create 26x26 array
-    sorted_words.append([])
-    for j in range(26):
-        sorted_words[i].append([])
-
-for word in words:
-    indx_first_letter = alphabet.find(word[0])
-    indx_second_letter = alphabet.find(word[1])
-    sorted_words[indx_first_letter][indx_second_letter].append(word)
-
-print(sorted_words)
-
-
-def check_letter(x, y, sorted_words, board):
-    # letter = [x, y], sorted_words = sorted_words = board = board
-    letter_indx = board[x][y].letter_number
-
-    valid_two_letters = []
-    for i in range(-1, 2):
-        for j in range(-1, 2):
-            if i == 0 and j == 0:
-                continue
-            if (0 <= x + i < BOARD_SIZE) and (0 <= y + j < BOARD_SIZE):
-                ij = board[x + i][y + j]
-                if (len(sorted_words[letter_indx][ij.letter_number])) > 0:
-                    valid_two_letters.append(ij)
-                else:
-                    print("Invalid Pair: " + board[x][y].letter + ij.letter)
-
-    return valid_two_letters
-
-
-valid_letter_pairs = []
-for i in range(BOARD_SIZE):
-    for j in range(BOARD_SIZE):
-        letters = check_letter(i, j, sorted_words, board)
-        valid_letter_pairs.append(letters)
-
 
 def find_words(letters, board, sorted_words):
     used = []
@@ -119,28 +40,96 @@ def find_words(letters, board, sorted_words):
 
     return found_stems, found_words
 
+def check_letter(x, y, sorted_words, board):
+    # letter = [x, y], sorted_words = sorted_words = board = board
+    letter_indx = board[x][y].letter_number
 
-final_words = []
-for i in range(BOARD_SIZE * BOARD_SIZE):
-    stems = []
+    valid_two_letters = []
+    for i in range(-1, 2):
+        for j in range(-1, 2):
+            if i == 0 and j == 0:
+                continue
+            if (0 <= x + i < BOARD_SIZE) and (0 <= y + j < BOARD_SIZE):
+                ij = board[x + i][y + j]
+                if (len(sorted_words[letter_indx][ij.letter_number])) > 0:
+                    valid_two_letters.append(ij)
+                else:
+                    print("Invalid Pair: " + board[x][y].letter + ij.letter)
+
+    return valid_two_letters
+
+def get_words(board_raw):
+    board = []
+    for i in range(BOARD_SIZE):  # Create 26x26 array ????
+        temp = []
+        for j in range(BOARD_SIZE):
+            temp.append(Letter(i, j, board_raw[i][j]))
+        board.append(temp)
+
+
+    # Get all words from sowpods
+    f = open("sowpods.txt", 'r')
     words = []
-    y, x = [i % BOARD_SIZE, i // BOARD_SIZE]
-    first_letter = board[x][y]
-    for second_letter in valid_letter_pairs[i]:
-        result_stems, result_words = find_words([first_letter, second_letter], board, sorted_words)
-        final_words += result_words
-        stems += result_stems  # technically unnecessary if i set it to return to stems
-        while len(stems) > 0:
-            new_stems, words = find_words(stems[0], board, sorted_words)
-            stems += new_stems
-            final_words += words
-            stems.pop(0)
-    continue
+    for line in f:
+        if len(line[:-1]) > 2:
+            words.append(line[:-1])
+    words[-1] = "zymurgy"
 
-counts = {}
-for final_word in final_words:
-    print("".join([a.letter for a in final_word]))
+    # Sort into lists by first two letters
+    alphabet = "abcdefghijklmnopqrstuvwxyz"
+    sorted_words = []
+    for i in range(26):  # Create 26x26 array
+        sorted_words.append([])
+        for j in range(26):
+            sorted_words[i].append([])
 
-    counts[len(final_word)] = counts.get(len(final_word), 0) + 1
+    for word in words:
+        indx_first_letter = alphabet.find(word[0])
+        indx_second_letter = alphabet.find(word[1])
+        sorted_words[indx_first_letter][indx_second_letter].append(word)
 
-print(counts)
+    valid_letter_pairs = []
+    for i in range(BOARD_SIZE):
+        for j in range(BOARD_SIZE):
+            letters = check_letter(i, j, sorted_words, board)
+            valid_letter_pairs.append(letters)
+
+    final_words = []
+    for i in range(BOARD_SIZE * BOARD_SIZE):
+        stems = []
+        words = []
+        y, x = [i % BOARD_SIZE, i // BOARD_SIZE]
+        first_letter = board[x][y]
+        for second_letter in valid_letter_pairs[i]:
+            result_stems, result_words = find_words([first_letter, second_letter], board, sorted_words)
+            final_words += result_words
+            stems += result_stems  # technically unnecessary if i set it to return to stems
+            while len(stems) > 0:
+                new_stems, words = find_words(stems[0], board, sorted_words)
+                stems += new_stems
+                final_words += words
+                stems.pop(0)
+        continue
+
+    counts = {}
+    for final_word in final_words:
+        print("".join([a.letter for a in final_word]))
+
+        counts[len(final_word)] = counts.get(len(final_word), 0) + 1
+
+    print(counts)
+
+    word_coords = {}
+    debug_words = {}
+    for final_word in final_words:
+        coords = [(a.x, a.y) for a in final_word]
+        if len(final_word) not in word_coords:
+            word_coords[len(final_word)] = []
+            debug_words[len(final_word)] = []
+
+        word_string = "".join([a.letter for a in final_word])
+        if word_string not in debug_words[len(final_word)]:
+            word_coords[len(final_word)].append([coords, word_string])
+            debug_words[len(final_word)].append(word_string)
+
+    return word_coords

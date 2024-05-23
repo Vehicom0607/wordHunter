@@ -37,13 +37,15 @@ contours, _ = sort_contours(contours, method="top-to-bottom")
 
 # Initialize an empty list to store recognized letters
 recognized_letters = []
+grid_order = []
 
 # Loop over the contours
 for contour in contours:
     x, y, w, h = cv2.boundingRect(contour)
     if w > 10 and h > 10:  # filter out small noise
+        shrink = 45
         # Extract the letter
-        letter_image = mask[y + 10:y + h - 10, x + 10:x + w - 10]
+        letter_image = mask[y + shrink:y + h - shrink, x + shrink:x + w - shrink]
 
         # Add padding to the letter image
         padding = 0
@@ -53,12 +55,14 @@ for contour in contours:
         letter_image = cv2.resize(letter_image, (28, 28))
 
         # Use Tesseract to recognize the letter
-        letter = pytesseract.image_to_string(letter_image, config='--psm 10 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ')
+        letter = pytesseract.image_to_string(letter_image, config='--psm 10 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZo')
         recognized_letters.append(letter.strip().lower())
+        grid_order.append([(x + 50)//400, (y + 50)//400])
 
         # Draw the bounding box and recognized letter on the original image (for visualization purposes)
-        cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
-        cv2.putText(image, letter.strip(), (x + 10, y + 30), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+        cv2.rectangle(image, (x + shrink, y + shrink), (x + w - shrink, y + h - shrink), (0, 255, 0), 2)
+        cv2.putText(image, letter.strip(), (x + shrink + 10, y + shrink + 30), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+
 
 # Display the result
 cv2.imshow('Recognized Letters', image)
@@ -67,15 +71,9 @@ cv2.destroyAllWindows()
 
 # Print the recognized letters
 print("Recognized Letters:", recognized_letters)
-grid = []
-first_row = []
-for i in range(3, -1, -1):
-    first_row.append(recognized_letters[i])
-grid.append(first_row)
-for i in range(1, 4):
-    temp = []
-    for j in range(4):
-        temp.append(recognized_letters[i*4 + j])
-    grid.append(temp)
+grid = [[0 for _ in range(4)] for _ in range(4)]
+
+for coord in grid_order:
+    grid[coord[1]][coord[0]] = recognized_letters.pop(0)
 print(grid)
 
