@@ -53,8 +53,6 @@ def check_letter(x, y, sorted_words, board):
                 ij = board[x + i][y + j]
                 if (len(sorted_words[letter_indx][ij.letter_number])) > 0:
                     valid_two_letters.append(ij)
-                else:
-                    print("Invalid Pair: " + board[x][y].letter + ij.letter)
 
     return valid_two_letters
 
@@ -71,9 +69,8 @@ def get_words(board_raw):
     f = open("sowpods.txt", 'r')
     words = []
     for line in f:
-        if len(line[:-1]) > 2:
-            words.append(line[:-1])
-    words[-1] = "zymurgy"
+        words.append(line[:-1].lower())
+    words[-1] = "zzs"
 
     # Sort into lists by first two letters
     alphabet = "abcdefghijklmnopqrstuvwxyz"
@@ -112,24 +109,22 @@ def get_words(board_raw):
         continue
 
     counts = {}
-    for final_word in final_words:
-        print("".join([a.letter for a in final_word]))
-
-        counts[len(final_word)] = counts.get(len(final_word), 0) + 1
-
-    print(counts)
-
-    word_coords = {}
+    word_list = {}
     debug_words = {}
     for final_word in final_words:
         coords = [(a.x, a.y) for a in final_word]
-        if len(final_word) not in word_coords:
-            word_coords[len(final_word)] = []
+        if len(final_word) not in word_list:
+            word_list[len(final_word)] = []
             debug_words[len(final_word)] = []
 
         word_string = "".join([a.letter for a in final_word])
         if word_string not in debug_words[len(final_word)]:
-            word_coords[len(final_word)].append([coords, word_string])
+            word_list[len(final_word)].append([coords, word_string])
             debug_words[len(final_word)].append(word_string)
+            counts[len(word)] = counts.get(len(word), 0) + 1
 
-    return word_coords
+    print(counts)
+
+    for key in word_list:
+        print(str(key) + ":", len(word_list[key]))
+    return word_list

@@ -90,7 +90,7 @@ def get_letters(pts):
     for contour in contours:
         x, y, w, h = cv2.boundingRect(contour)
         if w > 10 and h > 10:  # filter out small noise
-            shrink = 45
+            shrink = 35
             # Extract the letter
             letter_image = mask[y + shrink:y + h - shrink, x + shrink:x + w - shrink]
 
@@ -104,9 +104,9 @@ def get_letters(pts):
 
             # Use Tesseract to recognize the letter
             letter = pytesseract.image_to_string(letter_image,
-                                                 config='--psm 10 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZo')
-            if letter == " " or letter == "":
-                letter = "O"
+                                                 config='--psm 10 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0')
+
+            letter = letter[0].upper()
 
             recognized_letters.append(letter.strip().lower())
             grid_order.append([(x + 50) // 400, (y + 50) // 400])

@@ -7,7 +7,7 @@ X_TOP = 133
 Y_TOP = 17
 
 file_path = "archived/gcode/grbl_test.gcode"
-serial_port = "/dev/tty.usbserial-130"  # Change this to your serial port
+serial_port = "/dev/tty.usbserial-120"  # Change this to your serial port
 baud_rate = 115200  # Change this to match your device's baud rate
 
 ser = serial.Serial(serial_port, baud_rate)
@@ -101,27 +101,17 @@ def start_game(pos):
 
 
 def win(words, start_time, pos):
-    # Start with the biggest word
-    biggest_len = 0
-    for key in words:
-        biggest_len = max(key, biggest_len)
+    # Keep track of claimed words and expected score
+    claimed_words = []
 
-    while biggest_len >= 3:
-        if biggest_len not in words:
-            biggest_len -= 1
-            continue
-        # for word in words[biggest_len]:
-        #     print("claiming", )
-        #     pos = claim_word(word, pos)
-        #     if time.perf_counter() - start_time > 80:
-        #         pos = reset(pos)
-        #         return True
-        for word in words[biggest_len]:
-            print("claiming", word[1])
-            pos = claim_word(word[0], pos)
-            if time.perf_counter() - start_time > 75:
-                pos = reset(pos)
-                return True
-        biggest_len -= 1
+    for word in words:
+        print("claiming", word[1])
+        claimed_words.append(word[1])
+        pos = claim_word(word[0], pos)
+        if time.perf_counter() - start_time > 80:
+            pos = reset(pos)
+            return claimed_words
 
     pos = reset(pos)
+    return claimed_words
+

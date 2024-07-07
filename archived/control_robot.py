@@ -8,7 +8,7 @@ X_TOP = 133
 Y_TOP = 17
 
 file_path = "archived/gcode/grbl_test.gcode"
-serial_port = "/dev/tty.usbserial-130"  # Change this to your serial port
+serial_port = "/dev/tty.usbserial-1130"  # Change this to your serial port
 baud_rate = 115200  # Change this to match your device's baud rate
 
 ser = serial.Serial(serial_port, baud_rate)
@@ -76,21 +76,7 @@ def send_gcode(file_path):
         print("An error occurred:", e)
 
 
-# send_gcode(file_path)
-current_pos = reset(current_pos)
-letters = [[2, 3],
-           [1, 3],
-           [0, 3],
-           [1, 2],
-           [1, 1]]
-
-current_pos = claim_word(letters, current_pos)
-current_pos = up(current_pos)
-current_pos = move_grid(0, 0, current_pos)
-current_pos = down(current_pos)
-current_pos = move_grid(2, 2, current_pos)
-current_pos = up(current_pos)
-
+move_grid(0, 0, current_pos)
 
 ser.close()
 

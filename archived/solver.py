@@ -4,14 +4,14 @@ BOARD_SIZE = 4
 alphabet = "abcdefghijklmnopqrstuvwxyz"
 
 
-# board_raw = []
-# for i in range(4):
-#     row = []
-#     for j in range(4):
-#         row.append(input("Enter letter " + str(i*4 + j + 1) + ":"))
-#     board_raw.append(row)
-#
-# print(board_raw)
+board_raw = []
+for i in range(4):
+    row = []
+    for j in range(4):
+        row.append(input("Enter letter " + str(i*4 + j + 1) + ":"))
+    board_raw.append(row)
+
+print(board_raw)
 
 
 class Letter:
@@ -32,7 +32,7 @@ class Letter:
 #     ['d', 't', 'x', 'c'],
 #     ['r', 'm', 'g', 'h'],
 #     ['u', 'e', 't', 'n']]
-board_raw = [['l', 'd', 's', 'u'], ['c', 'g', 't', 'e'], ['n', 'a', 'e', 'a'], ['o', 't', 'd', 'b']]
+# board_raw = [['l', 'd', 's', 'u'], ['c', 'g', 't', 'e'], ['n', 'a', 'e', 'a'], ['o', 't', 'd', 'b']]
 
 
 board = []
@@ -44,7 +44,7 @@ for i in range(BOARD_SIZE):  # Create 26x26 array
 
 
 # Get all words from sowpods
-f = open("sowpods.txt", 'r')
+f = open("../extracted_words.txt", 'r')
 words = []
 for line in f:
     if len(line[:-1]) > 2:
@@ -159,5 +159,25 @@ for final_word in final_words:
         word_coords[len(final_word)] = []
     word_coords[len(final_word)].append(coords)
 
-print(word_coords)
+counts = {}
+for final_word in final_words:
+    counts[len(final_word)] = counts.get(len(final_word), 0) + 1
 
+print(counts)
+word_list = {}
+debug_words = {}
+for final_word in final_words:
+    coords = [(a.x, a.y) for a in final_word]
+    if len(final_word) not in word_list:
+        word_list[len(final_word)] = []
+        debug_words[len(final_word)] = []
+
+    word_string = "".join([a.letter for a in final_word])
+    if word_string not in debug_words[len(final_word)]:
+        word_list[len(final_word)].append([coords, word_string])
+        debug_words[len(final_word)].append(word_string)
+
+for key in word_list:
+    print(str(key) + ":", len(word_list[key]))
+print(word_list)
+print("hi")
