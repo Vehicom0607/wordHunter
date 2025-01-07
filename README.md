@@ -9,7 +9,8 @@ https://www.instagram.com/reel/DEIZAheSNjq/?utm_source=ig_web_copy_link&igsh=MzR
 https://github.com/user-attachments/assets/8e7db6f7-ed2b-451e-ac5c-730bbd0aea4b
 
 # Highest Score Acheived So Far (130,400)
-![IMG_5816](https://github.com/user-attachments/assets/4f99ac87-c0ff-460e-b6bf-c697c0e8d4ba)
+![ecdd5366-0b2b-4a1f-8fa3-8124434c6dac](https://github.com/user-attachments/assets/8c4a70fe-5910-473b-947d-ce1dfbf8401e)
+
 
 # Details
 I'll likely write a blog post eventually(emphasis on the eventually) detailing the exact technical details.
